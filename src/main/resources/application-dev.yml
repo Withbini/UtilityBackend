@@ -1,0 +1,51 @@
+server:
+  port: 8080
+  servlet:
+    encoding:
+      charset: utf-8
+      force: true
+
+spring:
+  config:
+    activate:
+      on-profile: dev
+  web:
+    resources:
+      add-mappings: false
+  datasource:
+    url: jdbc:mysql://${rds_hostname}:${rds_port}/${rds_db_name}
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    username: ${rds_username}
+    password: ${rds_password}
+  mvc:
+    pathmatch:
+      matching-strategy: ant_path_matcher
+    view:
+      prefix: /templates/
+      suffix: .mustache
+  servlet:
+    multipart:
+      enabled: true
+      max-file-size : 3MB
+      max-request-size: 1MB
+
+  jpa:
+    hibernate:
+      ddl-auto: update #create update none
+    show-sql: true
+    properties:
+      hibernate:
+        format_sql: true
+        order_inserts: true
+        order_updates: true
+        jdbc:
+          batch_size: 100
+
+logging:
+  level:
+    '[org.hibernate.type]': TRACE
+    root: INFO
+
+file-save-prefix-path: /Library/WebServer/Documents
+file-web-path: localhost:80
+python-path: /opt/anaconda3/bin/python
