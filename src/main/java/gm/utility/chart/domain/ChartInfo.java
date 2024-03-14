@@ -1,9 +1,6 @@
 package gm.utility.chart.domain;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -12,12 +9,14 @@ import org.springframework.lang.NonNull;
 @Entity
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Getter
+@Table(indexes = {@Index(name = "i_publisher", columnList = "publisher"),})
 public class ChartInfo {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
 
     @NonNull
+    @Lob
     private String chart;
 
     @NonNull

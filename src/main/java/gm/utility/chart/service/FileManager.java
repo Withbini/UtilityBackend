@@ -25,7 +25,8 @@ public class FileManager {
                 LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd-HH:mm:ss")));
         Path dataFilePath = Paths.get(dataFolder.toAbsolutePath().toString() + "/chart.out");
 
-        log.info("현재 작업 경로: " + System.getProperty("user.dir"));
+        log.info("현재 작업 경로: {}", System.getProperty("user.dir"));
+        log.info("현재 dataFilePath 경로: {}",dataFilePath.toAbsolutePath().toString());
         try {
             if (!userFolderExists(userFolder))
                 Files.createDirectory(userFolder);
@@ -34,7 +35,9 @@ public class FileManager {
                 Files.createDirectory(dataFolder);
 
             Files.createFile(dataFilePath);
+
             byte[] decodedData = decoder.decode(data);
+
             Files.write(dataFilePath, decodedData);
         } catch (IOException e) {
             throw new FileCreationException("신규 파일 생성에 실패했습니다.");

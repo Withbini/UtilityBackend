@@ -31,7 +31,7 @@ spring:
 
   jpa:
     hibernate:
-      ddl-auto: update #create update none
+      ddl-auto: create #create update none
     show-sql: true
     properties:
       hibernate:
@@ -46,6 +46,8 @@ logging:
     '[org.hibernate.type]': TRACE
     root: INFO
 
-file-save-prefix-path: /Library/WebServer/Documents
-file-web-path: localhost:80
-python-path: /opt/anaconda3/bin/python
+file-save-prefix-path: "/Library/WebServer/Documents"
+file-web-path: "localhost:8080"
+python-path: "/opt/anaconda3/bin/python"
+wmp-path: ""
+python-script-arg: ""
