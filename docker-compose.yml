@@ -1,0 +1,35 @@
+version: "3"
+services:
+  database:
+    container_name: mysql-db
+    image: mysql:8.0
+    environment:
+      MYSQL_ROOT_HOST: ${MYSQL_ROOT_NAME}
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWD}
+    volumes:
+      - ./mysql-init.d:/docker-entrypoint-initdb.d
+  file-server:
+    build:
+      context: .
+      dockerfile: Dockerfile-file-server
+    restart: always
+    ports:
+      - "8082:80"
+    container_name: file-server
+    environment:
+      TZ: Asia/Seoul
+    volumes:
+      - /Users/jaebinlee/MyFolder:/usr/local/apache2/htdocs/
+  webapp:
+    build:
+      context: ..
+      dockerfile: Dockerfile
+    restart: always
+    ports:
+      - "8081:80"
+    container_name: utility-server
+    environment:
+      TZ: Asia/Seoul
+    depends_on:
+      - database
+      - file-server

@@ -7,14 +7,17 @@ import org.springframework.stereotype.Component;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.util.ArrayList;
+import java.util.List;
 
 @Component
 @Slf4j
 public class PythonExecutor {
     @Value("${python-path}")
-    public static String pythonExecutionPath;
+    public String pythonExecutionPath;
 
-    public String executePythonScript(String commandList) {
+    public List<String> executePythonScript(String commandList) {
+        List<String> ret = new ArrayList<>();
         try {
             //TODO:명령어를 맞게 입력
             String[] commands = parseCommandList(commandList);
@@ -26,23 +29,24 @@ public class PythonExecutor {
 
             BufferedReader reader = new BufferedReader(new InputStreamReader(process.getInputStream()));
             String line;
-            String result = "";
             while ((line = reader.readLine()) != null) {
                 log.info(line);
-                result = line;
+                ret.add(line);
             }
 
             // Wait for the process to complete
             int exitCode = process.waitFor();
-            log.info("Python script execution finished with exit code: {}. result :{}", exitCode, result);
-            return result;
+            log.info("Python script execution finished with exit code: {}. result :{}", exitCode, ret);
+            if (exitCode != 0)
+                throw new RuntimeException("python 수행 실패");
+            return ret;
         } catch (IOException | InterruptedException e) {
-            e.printStackTrace();
+            log.info("error : {}", e.getMessage());
         }
-        return null;
+        return ret;
     }
 
-    private static String[] parseCommandList(String commandList) {
+    private String[] parseCommandList(String commandList) {
         String[] parsedCommandList = commandList.split(" ");
         String[] commands = new String[parsedCommandList.length + 1];
         commands[0] = pythonExecutionPath;

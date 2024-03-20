@@ -14,6 +14,8 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
+
 @Service
 @RequiredArgsConstructor
 @Slf4j
@@ -25,11 +27,11 @@ public class ChartServiceImpl implements ChartService {
     //TODO: 마운트 예정.
     @Value("${file-save-prefix-path}")
     @Getter
-    private String savePrefixPath = "";
+    private String saveFilePrefixPath = "";
 
     @Value("${file-web-path}")
     @Getter
-    private String webPath = "";
+    private String apacheWebFileViewerPath = "";
 
     @Value("${wmp-path}")
     @Getter
@@ -42,20 +44,28 @@ public class ChartServiceImpl implements ChartService {
     @Transactional
     @Override
     public UploadResponseDto uploadFile(UploadRequestDto request) {
-        log.info("JBJB file-save-prefix-path :{}",savePrefixPath);
-        String physicalFilePath = fileManager.createFile(savePrefixPath, request.username(), request.data());
-        ChartInfo chart = new ChartInfo(request.data(), webPath, physicalFilePath, request.username(), request.memo());
+        log.info("[uploadFile] request :{}", request);
+        String physicalFilePath = fileManager.createFile(saveFilePrefixPath, request.username(), request.data());
+        ChartInfo chart = new ChartInfo(request.data(), apacheWebFileViewerPath,
+                physicalFilePath, request.username(), request.memo());
         repository.save(chart);
-        return new UploadResponseDto(savePrefixPath + "/" + physicalFilePath, chart.getId());
+        return new UploadResponseDto(saveFilePrefixPath + "/" + physicalFilePath, chart.getId());
     }
 
     @Transactional
     @Override
     public ExecutePythonResponseDto executePythonFile(ExecutePythonRequestDto request) {
         ChartInfo chart = findById(request.id());
-        String wmpResultPath = pythonExecutor.executePythonScript(String.format("%s %s", scriptArgs, chart.getFullFilePath()));
+        String wmpResultPath = "";
+        // execute python {wmp-path}/{sbsi argument} + {chart file path}
+        //TODO: support GET chart info and custom python path
+        List<String> pythonResult = pythonExecutor.executePythonScript(String.format("%s/%s %s", wmpPath, scriptArgs,
+                saveFilePrefixPath + "/" + chart.getFullFilePath()));
 
-        return new ExecutePythonResponseDto(webPath + "/" + wmpResultPath);
+        wmpResultPath = fileManager.getFilePath(pythonResult);
+        log.info("wmp result :{}", wmpResultPath);
+
+        return new ExecutePythonResponseDto(apacheWebFileViewerPath + "/" + wmpResultPath);
     }
 
     private ChartInfo findById(long id) {

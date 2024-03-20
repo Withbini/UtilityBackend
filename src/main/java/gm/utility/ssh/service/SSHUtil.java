@@ -18,7 +18,6 @@ public class SSHUtil {
 
     public String getSSHResponse(SSHModel model, String command, SSHType type) {
         SSHConnect sshConnect = new SSHConnectImpl();
-        System.out.println(Thread.currentThread().getId()+"========================================");
         sshConnect.connect(model);
         sshConnect.execute(command, type.value());
         return sshConnect.getResponse();

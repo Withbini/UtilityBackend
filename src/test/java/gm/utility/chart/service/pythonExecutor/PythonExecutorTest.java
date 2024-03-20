@@ -13,6 +13,7 @@ import org.springframework.test.util.ReflectionTestUtils;
 
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.*;
@@ -35,8 +36,8 @@ class PythonExecutorTest {
     public void test1() {
         Path pythonFilePath = Path.of("src/test/java/gm/utility/chart/service/pythonExecutor/test.py");
         Path dataFilePath = Path.of("src/test/java/gm/utility/chart/service/pythonExecutor/data.py");
-        String result = pythonExecutor.executePythonScript(String.format("%s %s -l -g",pythonFilePath.toAbsolutePath().toString(),
+        List<String> result = pythonExecutor.executePythonScript(String.format("%s %s -l -g",pythonFilePath.toAbsolutePath().toString(),
                 dataFilePath.toAbsolutePath().toString()));
-        assertThat(result).isEqualTo("15");
+        assertThat(result.get(0)).isEqualTo("15");
     }
 }

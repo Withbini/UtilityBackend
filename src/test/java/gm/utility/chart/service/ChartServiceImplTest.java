@@ -35,7 +35,7 @@ class ChartServiceImplTest {
         UploadRequestDto request = new UploadRequestDto("jaebin01.lee", "TVPLAT-111111", "data");
         ChartInfo expectedChart = new ChartInfo(
                 request.data(),
-                ChartServiceImpl.getWebPath(),
+                chartService.getApacheWebFileViewerPath(),
                 "/jaebin01.lee/2000-01-01-01:00:00/chart.out",
                 request.username(),
                 request.memo());
@@ -47,7 +47,7 @@ class ChartServiceImplTest {
         UploadResponseDto response = chartService.uploadFile(request);
 
         //then
-        assertThat(response.filepath()).contains(ChartServiceImpl.getWebPath() + "/jaebin01.lee/");
+        assertThat(response.filepath()).contains(chartService.getApacheWebFileViewerPath() + "/jaebin01.lee/");
     }
 
     @Test

@@ -1,3 +1,6 @@
 package gm.utility.chart.dto;
 
-public record ExecutePythonRequestDto(long id, String username){}
+import java.util.List;
+
+public record ExecutePythonRequestDto(long id, String username, String command, List<String> arguments) {
+}

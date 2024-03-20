@@ -1,5 +1,5 @@
 server:
-  port: 8080
+  port: 80
   servlet:
     encoding:
       charset: utf-8
@@ -50,4 +50,4 @@ file-save-prefix-path: "/var/www/html"
 file-web-path: "10.157.93.70:48041"
 python-path: python
 python-script-arg: "sbsi.py -l default -g"
-wmp-path: ""
+wmp-path: "/home/jaebin/repo/wmpchart"

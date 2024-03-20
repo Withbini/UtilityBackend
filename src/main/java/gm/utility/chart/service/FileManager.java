@@ -12,6 +12,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.List;
 
 @Component
 @RequiredArgsConstructor
@@ -22,7 +23,7 @@ public class FileManager {
     public String createFile(String rootPath, String username, String data) throws Base64DecodingException {
         Path userFolder = Paths.get(rootPath + '/' + username);
         Path dataFolder = Paths.get(userFolder.toAbsolutePath().toString() + '/' +
-                LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd-HH:mm:ss")));
+                LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd-HH-mm-ss")));
         Path dataFilePath = Paths.get(dataFolder.toAbsolutePath().toString() + "/chart.out");
 
         log.info("현재 작업 경로: {}", System.getProperty("user.dir"));
@@ -51,5 +52,16 @@ public class FileManager {
 
     public boolean folderExists(Path folder) {
         return Files.exists(folder) && Files.isDirectory(folder);
+    }
+
+    public String getFilePath(List<String> pythonResult) {
+        for(String result : pythonResult){
+           if(result.contains("report data to")){
+               //report data to : {file path}
+               String[] data = result.replace(" ","").split(":");
+               return data[1];
+           }
+        }
+        return "";
     }
 }
